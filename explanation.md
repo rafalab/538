@@ -4,7 +4,10 @@
 
 ### Summary
 
+The code needed to reproduce analysis is at [https://github.com/rafalab/538](https://github.com/rafalab/538)
+
 The model is for the Biden - Trump spread. 
+
 
 * Biden advantage in fundamentals: Represented by $b$ below. How many percentage points we think the polls are off in favor of Biden. A value of -1% means we add 1% in favor of Trump to the spread estimate of each state. 
 
@@ -19,11 +22,11 @@ The model is for the Biden - Trump spread.
 * Error distribution DF (state): These are the degrees of freedom of the t-distribution used to generate random state-level errors $\delta_i$. Values closer to 0 will generate larger outliers. Values of 30 and above result in the t-distribution being equivalent to a normal distribution.
 
 
-* Number of simulations: Number of elections simulated. Larger values result in more stable results.
+<!-- * Number of simulations: Number of elections simulated. Larger values result in more stable results. -->
 
 ### Introduction 
 
-This is an attempt at reproducing the FiveThirtyEight election forecast model, which is described in some 
+This is an attempt at reproducing the [FiveThirtyEight election forecast model](https://projects.fivethirtyeight.com/2020-election-forecast/), which is described in some 
 detail [here](https://fivethirtyeight.com/features/how-fivethirtyeights-2020-presidential-forecast-works-and-whats-different-because-of-covid-19/).
 
 The general idea is to base predictions on the distribution of election day results for all other previous elections that had similar poll results and fundamentals (demographics and economic data) as we see today. Because there aren't enough elections to use a simple approach, such as tabulation, we try to train a statistical model that is defined by a small number of parameters that we can estimate. We then use the model to predict the election day distribution. A statisticians refers to this as estimating the conditional distribution for the election day result given today's poll data and fundamentals. 
@@ -121,6 +124,7 @@ and general 40,000 election day results for each state. From these 40,000 result
 probability of Biden wining as the proportion of times the total electoral votes are 
 above 270.
 
+You can see the code for the simulation [here](https://github.com/rafalab/538/blob/master/funcs.R).
 ### Notable diferences
 
 Details of the FiveThirtyEight model are not all available so we make our best attempt

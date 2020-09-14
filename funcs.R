@@ -1,8 +1,6 @@
-## for testing:
-#B = 200000; tau = 0.02; global_bias = 0.01; global_error_sd = 0.03; state_error_sd = 0.02; df_g = 3, df_s = 3
 run_sim <- function(B = 40000, tau = 0.02, global_bias = -0.01, 
                     global_error_sd = 0.03, state_error_sd = 0.02, 
-                    df_g = 3, df_s =3){
+                    df_g = 3, df_s = 3){
   
   # wrangle data
   source("wrangle.R") ## this defines results

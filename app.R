@@ -22,48 +22,59 @@ ui <- fluidPage(
                         min = -5,
                         max = 5,
                         step = 0.1,
-                        value = -1),
+                        value = -1,
+                        ticks = FALSE),
             
             sliderInput("global_error_sd",
                         "Nation-level error SD",
                         min = 0,
                         max = 10,
                         step = 0.1,
-                        value = 4),
+                        value = 4,
+                        ticks = FALSE),
             
             sliderInput("state_error_sd",
                         "State-level error SD",
                         min = 0,
                         max = 10,
                         step = 0.1,
-                        value = 2),
+                        value = 2,
+                        ticks = FALSE),
             
             sliderInput("tau",
                         "Polls versus fundamentals weight",
                         min = 0,
                         max = 10,
-                        value = 3),
+                        value = 3,
+                        ticks = FALSE),
             
             sliderInput("df_g",
                         "Error distribution DF (global)",
                         min = 3,
                         max = 30,
-                        value = 3),
+                        value = 3,
+                        ticks = FALSE),
            
            
              sliderInput("df_s",
                         "Error distribution DF (state)",
                         min = 3,
                         max = 30,
-                        value = 3),
-                        
+                        value = 3,
+                        ticks = FALSE),
+            # sliderInput("B",
+            #             "Number of simulations",
+            #             min = 10000,
+            #             max = 100000,
+            #             step = 10000,
+            #             value = 40000,
+            #             ticks = FALSE),
+            # 
+            br(),
+            
+            actionButton("go", "Simulate!")),    
+            
 
-            sliderInput("B",
-                        "Number of simulations",
-                        min = 10000,
-                        max = 100000,
-                        step = 10000,
-                        value = 40000)),
         mainPanel(
             tabsetPanel(
                 tabPanel("Electoral College",
@@ -92,13 +103,15 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
     
-    res <- reactive(run_sim(input$B, 
-                            input$tau/100, 
-                            input$global_bias/100, 
-                            input$global_error_sd/100, 
-                            input$state_error_sd/100, 
-                            input$df_g, 
-                            input$df_s))
+    res <- eventReactive(input$go, {
+        run_sim(B = 40000, 
+                input$tau/100, 
+                input$global_bias/100, 
+                input$global_error_sd/100, 
+                input$state_error_sd/100, 
+                input$df_g, 
+                input$df_s)
+    }, ignoreNULL = FALSE)
     
     
     output$biden_prob <- renderText({
