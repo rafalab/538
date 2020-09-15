@@ -124,7 +124,7 @@ server <- function(input, output, session) {
         biden_expected <- round(mean(biden_ev))
         paste("<h3>Probability of Biden win:", win_prob, "in 100\n",
               "<br>\n",
-              "<h3>Expected result: Biden", biden_expected, "Trump",  538 - biden_expected,
+              "<h3>Average result: Biden", biden_expected, "Trump",  538 - biden_expected,
               "<h3>80% cofidence interval for spread:", 
               paste0("(", paste0(quantile(2*biden_ev - 538, c(.1,.9)), collapse = ", "), ")"),
               "<hr> <br>")
@@ -139,10 +139,10 @@ server <- function(input, output, session) {
         data.frame(ev = biden_ev) %>%
             ggplot(aes(x = ev, y = ..density..)) +
             geom_histogram(binwidth = 1, fill = "darkblue", alpha = 0.25) +
-            geom_density(color = "darkblue", adjust = 1.5, lwd = 1) +
+            geom_density(color = "darkblue", adjust = 1, lwd = 1) +
             scale_x_continuous(breaks = seq(0, 500, 100), limits = c(-0.5, 538.5)) +
             geom_vline(xintercept = 270) + 
-            ggtitle("All Simulated Electoral College Outomes") +
+            ggtitle("All Simulated Electoral College Outcomes") +
             xlab("Electoral Votes for Biden") +
             ylab("Proportion of simulations")
     })
@@ -189,7 +189,7 @@ server <- function(input, output, session) {
         
     output$trends <- renderPlot({
         tmp <- all_polls %>%
-            filter(state == input$state, year(end_date) == 2020 &
+            filter(state == input$state, end_date >= make_date(2020, 6, 1) &
                        !fte_grade %in% c("C/D","D-")) %>%
             mutate(spread = spread * 100,
                    fte_grade = ifelse(!is.na(fte_grade), paste0(" (", fte_grade, ")"), ""),
@@ -197,45 +197,50 @@ server <- function(input, output, session) {
                    Population = population) %>%
             mutate(Pollster = str_remove_all(Pollster, "\\s+College|\\s+Univerisy|Center\\sfor"))
         
-        keep <- tmp %>% group_by(Pollster) %>%
-            summarise(n = n(), .groups = "drop") %>%
-            ungroup() %>%
-            arrange(desc(n)) %>%
-            slice(1:8) %>%
-            pull(Pollster)
-           
-        tmp <- tmp %>% 
-            mutate(fte_grade = if_else(Pollster %in% keep, fte_grade, as.character(NA)),
-                   Pollster = if_else(Pollster %in% keep, Pollster, "Other"))
+        if(nrow(tmp) < 1) return(NULL) 
+        else{
+            keep <- tmp %>% group_by(Pollster) %>%
+                summarise(n = n(), .groups = "drop") %>%
+                ungroup() %>%
+                arrange(desc(n)) %>%
+                slice(1:8) %>%
+                pull(Pollster)
+            
+            tmp <- tmp %>% 
+                mutate(fte_grade = if_else(Pollster %in% keep, fte_grade, as.character(NA)),
+                       Pollster = if_else(Pollster %in% keep, Pollster, "Other"))
+            
+            lim <-  max(c(abs(tmp$spread), 25))
+            
+            delta <- mean(-diff(as.numeric(tmp$end_date)), trim = 0.1)
+            points_per_window <- 28 / delta
+            span <- pmin(pmax(points_per_window / nrow(tmp), 5/nrow(tmp)), 1)
         
-        lim <-  max(c(abs(tmp$spread), 25))
-        
-        delta <- mean(-diff(as.numeric(tmp$end_date)), trim = 0.1)
-        points_per_window <- 14/delta
-        span <- points_per_window / nrow(tmp)
-        
-        tmp %>%
-            mutate(Pollster = factor(Pollster, levels = c(setdiff(unique(Pollster), "Other"), "Other"))) %>%
-            ggplot(aes(end_date, spread)) +
-            geom_hline(yintercept = 0, lty = 2) +
-            geom_point(aes(color = Pollster, pch = Population), cex = 2) +
-            geom_smooth(method = "loess", formula = "y~x",
-                        method.args = list(span = span, degree = 1, familiy = "symmetric"),
-                        color = "black", alpha = 0.5) +
-            coord_cartesian(ylim =  c(-lim, lim)) + 
-            ggtitle(input$state) +
-            ylab("Biden - Trump") + xlab("Last day of poll")  + 
-            theme(legend.position="bottom", legend.direction = "horizontal", legend.box = "vertical",
-                  legend.title.align= 0.5, 
-                  legend.text = element_text(size = 8),
-                  legend.title = element_text(size = 10),
-                  legend.spacing = unit(0, "cm")) +
-            guides(color = guide_legend(order = 1, title.position = "top"), 
-                   ch = guide_legend(title.position = "left"),
-                   title.vjust = 0)
-                  
+            res <- tmp %>%
+                mutate(Pollster = factor(Pollster, levels = c(setdiff(unique(Pollster), "Other"), "Other"))) %>%
+                ggplot(aes(end_date, spread)) +
+                geom_hline(yintercept = 0, lty = 2) +
+                coord_cartesian(ylim =  c(-lim, lim)) + 
+                ggtitle(input$state) +
+                ylab("Biden - Trump") + xlab("Last day of poll")  + 
+                theme(legend.position="bottom", legend.direction = "horizontal", 
+                      legend.box = "vertical",
+                      legend.title.align= 0.5, 
+                      legend.text = element_text(size = 8),
+                      legend.title = element_text(size = 10),
+                      legend.spacing = unit(0, "cm")) +
+                guides(color = guide_legend(order = 1, title.position = "top"), 
+                       pch = guide_legend(title.position = "left"),
+                       title.vjust = 0)
+            if(nrow(tmp) >= 10)  
+                res <- res + geom_smooth(method = "loess", formula = "y~x", span = span,
+                                         method.args = list(degree = 1, family = "symmetric"),
+                                         color = "black", alpha = 0.5)
+            res <- res + geom_point(aes(color = Pollster, pch = Population), cex = 2)
+
+            return(res)
+        }
     })
-    
 }
 
 # Run the application 
