@@ -12,10 +12,6 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            selectInput("state",
-                        "State (only used for trend plot)",
-                        state_names,
-                        selected = "Popular Vote"),
             
             sliderInput("global_bias",
                         "Biden advantage in fundamentals",
@@ -44,23 +40,24 @@ ui <- fluidPage(
             sliderInput("tau",
                         "Polls versus fundamentals weight",
                         min = 0,
-                        max = 10,
+                        max = 25,
+                        step = 0.1,
                         value = 3,
                         ticks = FALSE),
             
             sliderInput("df_g",
                         "Error distribution DF (global)",
-                        min = 3,
+                        min = 1,
                         max = 30,
-                        value = 3,
+                        value = 5,
                         ticks = FALSE),
            
            
              sliderInput("df_s",
                         "Error distribution DF (state)",
-                        min = 3,
+                        min = 1,
                         max = 30,
-                        value = 3,
+                        value = 5,
                         ticks = FALSE),
             # sliderInput("B",
             #             "Number of simulations",
@@ -70,9 +67,16 @@ ui <- fluidPage(
             #             value = 40000,
             #             ticks = FALSE),
             # 
-            br(),
             
-            actionButton("go", "Simulate!")),    
+            actionButton("go", "Simulate!"),
+            
+            hr(),
+            
+            selectInput("state",
+                        "State (only used for trend plot)",
+                        state_names,
+                        selected = "Popular Vote"),
+        ),    
             
 
         mainPanel(
@@ -145,7 +149,8 @@ server <- function(input, output, session) {
     
     output$swing_states <-  DT::renderDataTable({
         
-        swing_results <- res()$state_results %>% filter(abs(`Prob of Biden Win`-50) <= 40)
+        swing_results <- res()$state_results %>% filter(abs(`Prob of Biden Win`-50) <= 45) %>%
+            arrange(`Prob of Biden Win`)
     
         DT::datatable(swing_results ,  #class = 'white-space: nowrap',
                       rownames = FALSE,
@@ -187,8 +192,10 @@ server <- function(input, output, session) {
             filter(state == input$state, year(end_date) == 2020 &
                        !fte_grade %in% c("C/D","D-")) %>%
             mutate(spread = spread * 100,
-                Pollster = paste0(str_remove(pollster,  "/.*"), " (", fte_grade, ")"),
-                Population = population)
+                   fte_grade = ifelse(!is.na(fte_grade), paste0(" (", fte_grade, ")"), ""),
+                   Pollster = paste0(str_remove(pollster,  "/.*"), fte_grade),
+                   Population = population) %>%
+            mutate(Pollster = str_remove_all(Pollster, "\\s+College|\\s+Univerisy|Center\\sfor"))
         
         keep <- tmp %>% group_by(Pollster) %>%
             summarise(n = n(), .groups = "drop") %>%
@@ -207,7 +214,9 @@ server <- function(input, output, session) {
         points_per_window <- 14/delta
         span <- points_per_window / nrow(tmp)
         
-        tmp %>%   ggplot(aes(end_date, spread)) +
+        tmp %>%
+            mutate(Pollster = factor(Pollster, levels = c(setdiff(unique(Pollster), "Other"), "Other"))) %>%
+            ggplot(aes(end_date, spread)) +
             geom_hline(yintercept = 0, lty = 2) +
             geom_point(aes(color = Pollster, pch = Population), cex = 2) +
             geom_smooth(method = "loess", formula = "y~x",
@@ -215,7 +224,16 @@ server <- function(input, output, session) {
                         color = "black", alpha = 0.5) +
             coord_cartesian(ylim =  c(-lim, lim)) + 
             ggtitle(input$state) +
-            ylab("Biden - Trump") + xlab("Last day of poll")  
+            ylab("Biden - Trump") + xlab("Last day of poll")  + 
+            theme(legend.position="bottom", legend.direction = "horizontal", legend.box = "vertical",
+                  legend.title.align= 0.5, 
+                  legend.text = element_text(size = 8),
+                  legend.title = element_text(size = 10),
+                  legend.spacing = unit(0, "cm")) +
+            guides(color = guide_legend(order = 1, title.position = "top"), 
+                   ch = guide_legend(title.position = "left"),
+                   title.vjust = 0)
+                  
     })
     
 }
