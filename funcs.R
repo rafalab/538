@@ -1,10 +1,8 @@
+## wrange.R has to run before this function works
 run_sim <- function(B = 40000, tau = 0.02, global_bias = -0.01, 
                     global_error_sd = 0.03, state_error_sd = 0.02, 
                     df_g = 3, df_s = 3){
   
-  # wrangle data
-  source("wrangle.R") ## this defines results
-   
   # prior means are 2016 results
   mu <- results$spread_2016 
   
@@ -29,7 +27,7 @@ run_sim <- function(B = 40000, tau = 0.02, global_bias = -0.01,
     sapply(rt(B, df_g)*global_error_sd, function(b) posterior_mean + b)
   
   # spread can't be larger than 1
-  sim <- apply(sim, 2, function(x) pmax(-1, pmin(1, x)))
+  sim <- pmax(pmin(sim,1), -1)
   
   # compute electoral college results for each simulation
   biden_ev <- colSums(sweep(sim>0, 1, results$electoral_votes, FUN = "*")) 

@@ -1,6 +1,6 @@
 # FiveThirtyEight 2020 Forecast Approximation
 
-* [Interactive Tool](https://rconnect.dfci.harvard.edu/connect/#/apps/38/access)
+* [Interactive Tool](https://rconnect.dfci.harvard.edu/538)
 
 * wrangle.R - R script that downloads the raw polls data and generates the data frames used in the simulation
 

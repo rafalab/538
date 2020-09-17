@@ -2,7 +2,6 @@ library(shiny)
 source("wrangle.R")
 source("funcs.R")
 
-
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -89,6 +88,8 @@ ui <- fluidPage(
                          DT::dataTableOutput("swing_states")),
                 
                 tabPanel("All States",
+                         plotOutput("map"),
+                         hr(),
                          DT::dataTableOutput("states")),
                          
                 tabPanel("Trends",
@@ -131,7 +132,17 @@ server <- function(input, output, session) {
     }
     )
               
-    
+    output$map <- renderPlot({
+        res <- res()$state_results 
+        res$State <- str_remove(res$State, "\\s\\(\\d+\\)")
+        res$state <- state.abb[match(res$State, state.name)]
+        res$state[res$State=="District of Columbia"] <- "DC"
+        res$col <- pmin(pmax(res$`Prob of Biden Win`, 5), 95)
+        usmap::plot_usmap(data = res, values = "col", color = "white", labels = TRUE) + 
+            scale_fill_continuous(name = "Probability of Biden Win", low = "red", high = "blue") +
+            theme(legend.position = "right") +
+            ggtitle("Electoral College Map")
+    })
     output$electoral_college<- renderPlot({
        
         biden_ev <- res()$biden_ev
@@ -176,8 +187,8 @@ server <- function(input, output, session) {
                        !fte_grade %in% c("C/D","D-")) %>%
             mutate(Pollster = paste0(str_remove(pollster,  "/.*"), " (", fte_grade, ")"),
                    Biden = round(Biden,1),  Trump = round(Trump,1), Spread = round(spread*100,1)) %>%
-            select(end_date, Pollster, fte_grade, Biden, Trump, Spread) %>%
-            rename(`End date` = end_date, Grade = fte_grade)
+            select(end_date, Pollster, fte_grade, population, Biden, Trump, Spread) %>%
+            rename(`End date` = end_date, Population = population, Grade = fte_grade)
         
         DT::datatable(tmp,  #class = 'white-space: nowrap',
                       rownames = FALSE,

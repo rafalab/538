@@ -50,8 +50,8 @@ We further decompose the model as described below.
 #### General election day bias
 
 
-We include the random term $B$ to account for the fact that, historically, we observe consistent difference between the average of polls and the election day result. We model $B$ as follows:
-This bias has gone either way, Republican or Democrat, and is difficult or impossible to estimate. We therefore model the bias $B$ as follows
+We include the random term $B$ to account for the fact that, historically, we observe consistent difference between the average of polls and the election day result. 
+This bias has gone either way, Republican or Democrat, and is difficult or impossible to estimate. We therefore model the bias $B$ as follows:
 
 
 $$
