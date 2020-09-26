@@ -41,7 +41,7 @@ ui <- fluidPage(
                         min = 0,
                         max = 25,
                         step = 0.1,
-                        value = 3,
+                        value = 3.5,
                         ticks = FALSE),
             
             sliderInput("df_g",
