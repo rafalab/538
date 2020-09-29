@@ -8,6 +8,9 @@ ui <- fluidPage(
     # Application title
     titlePanel("FiveThirtyEight 2020 Forecast Approximation"),
 
+    # -- Google analytics add on
+    tags$head(includeHTML(("google-analytics.html"))),
+    
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
@@ -41,7 +44,7 @@ ui <- fluidPage(
                         min = 0,
                         max = 25,
                         step = 0.1,
-                        value = 3.5,
+                        value = 4,
                         ticks = FALSE),
             
             sliderInput("df_g",
