@@ -17,10 +17,10 @@ ui <- fluidPage(
             
             sliderInput("global_bias",
                         "Biden advantage in fundamentals",
-                        min = -5,
-                        max = 5,
-                        step = 0.1,
-                        value = -1,
+                        min = -2.5,
+                        max = 2.5,
+                        step = 0.05,
+                        value = -0.7,
                         ticks = FALSE),
             
             sliderInput("global_error_sd",
@@ -43,8 +43,8 @@ ui <- fluidPage(
                         "Polls versus fundamentals weight",
                         min = 0,
                         max = 25,
-                        step = 0.1,
-                        value = 4,
+                        step = 0.05,
+                        value = 5,
                         ticks = FALSE),
             
             sliderInput("df_g",
@@ -129,8 +129,8 @@ server <- function(input, output, session) {
         paste("<h3>Probability of Biden win:", win_prob, "in 100\n",
               "<br>\n",
               "<h3>Average result: Biden", biden_expected, "Trump",  538 - biden_expected,
-              "<h3>80% cofidence interval for spread:", 
-              paste0("(", paste0(quantile(2*biden_ev - 538, c(.1,.9)), collapse = ", "), ")"),
+              "<h3>80% cofidence interval for Biden:", 
+              paste0("(", paste0(quantile(biden_ev, c(.1,.9)), collapse = ", "), ")"),
               "<hr> <br>")
     }
     )
