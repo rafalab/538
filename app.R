@@ -20,7 +20,7 @@ ui <- fluidPage(
                         min = -2.5,
                         max = 2.5,
                         step = 0.05,
-                        value = -0.7,
+                        value = -0.25,
                         ticks = FALSE),
             
             sliderInput("global_error_sd",

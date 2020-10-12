@@ -15,7 +15,7 @@ The model is for the Biden - Trump spread.
 
 * State-level error SD: Represented by $\sigma_Z$ below. This is the standard error of the difference between state-level average poll spread and the election day result. Because this error averages out when we combine the results from all states, it does not have as strong effect as the nation-level error.
 
-* Polls versus fundamentals weight: Represented by $\tau$ below. This parameter is the standard error of the prior distribution used to adjust the state-specific spread estimates.  The cloer $\tau$ is to 0, the less weight the poll averages receive.
+* Polls versus fundamentals weight: Represented by $\tau$ below. This parameter is the standard error of the prior distribution used to adjust the state-specific spread estimates.  The closer $\tau$ is to 0, the less weight the poll averages receive.
 
 * Error distribution DF (global): These are the degrees of freedom of the t-distribution used to generate random national-level errors $\varepsilon$. Values closer to 0 will generate larger outliers. Values of 30 and above result in the t-distribution being equivalent to a normal distribution.
 
