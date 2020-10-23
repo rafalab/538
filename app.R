@@ -28,7 +28,7 @@ ui <- fluidPage(
                         min = 0,
                         max = 10,
                         step = 0.1,
-                        value = 4,
+                        value = 3.5,
                         ticks = FALSE),
             
             sliderInput("state_error_sd",
