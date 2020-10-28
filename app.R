@@ -20,7 +20,7 @@ ui <- fluidPage(
                         min = -2.5,
                         max = 2.5,
                         step = 0.05,
-                        value = -0.25,
+                        value = 0,
                         ticks = FALSE),
             
             sliderInput("global_error_sd",
@@ -28,7 +28,7 @@ ui <- fluidPage(
                         min = 0,
                         max = 10,
                         step = 0.1,
-                        value = 3.5,
+                        value = 3,
                         ticks = FALSE),
             
             sliderInput("state_error_sd",
@@ -43,7 +43,7 @@ ui <- fluidPage(
                         "Polls versus fundamentals weight",
                         min = 0,
                         max = 25,
-                        step = 0.05,
+                        step = 0.1,
                         value = 5,
                         ticks = FALSE),
             
