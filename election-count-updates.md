@@ -1,7 +1,7 @@
 Election Night Predictions
 ================
 Rafael Irizarry
-2020-11-09 10:17:48
+2020-11-09 10:23:07
 
 ## Load libraries
 
@@ -75,7 +75,7 @@ dat %>%
   facet_wrap(~state, scales = "free") 
 ```
 
-![](election-count-updates_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](election-count-updates_files/figure-gfm/election-count-update-1.png)<!-- -->
 
 ## The Math
 

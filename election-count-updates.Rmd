@@ -72,7 +72,7 @@ saveRDS(dat, paste0("rdas/election-night-updates-",format(lubridate::now(), "%Y-
 
 ## Make the plot
 
-```{r, warning=FALSE, message=FALSE}
+```{r election-count-update, warning=FALSE, message=FALSE}
 dat %>% 
   mutate(state = paste0(state, " (expected total vote = ", prettyNum(n, big.mark = ","), ")")) %>%
   mutate(state = reorder(state, -n, first)) %>%
