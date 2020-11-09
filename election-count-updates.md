@@ -1,7 +1,7 @@
 Election Count Predictions
 ================
 Rafael Irizarry
-2020-11-09 13:29:41
+2020-11-09 14:28:13
 
 ## Load libraries
 
@@ -20,7 +20,7 @@ line and obtain standard errors using ordinary least squares.
 ``` r
 states <-c('pennsylvania', 'georgia', 'arizona', 'nevada')
 ## Define the percent at which the linear trend starts. Used EDA to determine.
-starts <- c(82.5, 94, 85, 85) 
+starts <- c(85, 94, 87, 90) 
 
 dat <- map_df(seq_along(states), function(i){
   
@@ -97,15 +97,15 @@ last_update <- dat %>%
   mutate(Biden_lead = format(-Trumps_lead, nsmall = 1)) %>%
   select(state, Biden_lead) %>%
   setNames(c("State", "Current Biden lead"))
-left_join(last_update, final_estimate, by = "State") %>% knitr::kable(align = c("l","r","r","r"))
+left_join(last_update, final_estimate, by = "State") %>% knitr::kable(align = c("l","r","r"))
 ```
 
 | State        | Current Biden lead | Final Estiamte |
 | :----------- | -----------------: | -------------: |
-| Arizona      |                0.5 |            0.1 |
+| Arizona      |                0.5 |            0.2 |
 | Georgia      |                0.2 |            0.6 |
-| Nevada       |                2.7 |            3.2 |
-| Pennsylvania |                0.7 |            2.0 |
+| Nevada       |                2.7 |            3.1 |
+| Pennsylvania |                0.7 |            1.8 |
 
 ## The Math
 
@@ -116,9 +116,9 @@ votes went for Trump. Let’s call the difference
 *b* = election day votes for Trump - election day votes for Biden
 
 However, in the case of Pennsylvania and Georgia, mail-in votes and some
-votes from large metropolitan areas, Philadelphia and Atlanta, were note
-counted by the end of election night. These votes went for Biden by a
-wide margin. Let’s call this difference
+votes from large metropolitan areas, Philadelphia and Atlanta for
+example, were not counted by the end of election night. These votes went
+for Biden by a wide margin. Let’s call this difference
 
 *m* = mail in and late metro area votes for Trump - mail in and late
 metro area votes for Biden
@@ -167,5 +167,5 @@ popular, *m* was not negative, in fact it was slightly positive.
 
   - Rick Paik Schoenberg, for alerting me to the linear pattern.
 
-  - Andy Jones \[@andy\_l\_jones\](<https://twitter.com/andy_l_jones>),
-    for pointing out the API.
+  - [Andy Jones](https://twitter.com/andy_l_jones), for pointing out the
+    API.
