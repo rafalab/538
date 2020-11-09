@@ -1,7 +1,7 @@
-Election Night Predictions
+Election Count Predictions
 ================
 Rafael Irizarry
-2020-11-09 10:23:07
+2020-11-09 10:34:01
 
 ## Load libraries
 
@@ -13,9 +13,9 @@ library(scales)
 
 ## Download and wrangle data and fit linear regression
 
-Then we download data from the New York Times API (thanks Andy Jones
-@andy\_l\_jones for the pointer) and create a data frame. Here we fit
-the line and obtain standard errors using ordinary least squares.
+The following code downloads data from the New York Times API and create
+a data frame with the information needed for the plots. Here we fit the
+line and obtain standard errors using ordinary least squares.
 
 ``` r
 states <-c('pennsylvania', 'georgia', 'arizona', 'nevada')
@@ -132,3 +132,9 @@ popular, *m* was not negative, in fact it was slightly positive.
     *f(x)* divided by the total votes until that moment. Because we are
     almost done counting, this total is not changing much, and the
     linear approximation holds.
+
+## Thanks
+
+  - Rick Paik Schoenberg, for alerting me to the linear pattern.
+
+  - Andy Jones @andy\_l\_jones, for the pointing out the API.

@@ -1,5 +1,5 @@
 ---
-title: "Election Night Predictions"
+title: "Election Count Predictions"
 author: "Rafael Irizarry"
 date: "`r Sys.time()`"
 output: github_document
@@ -19,8 +19,8 @@ library(scales)
 
 ## Download and  wrangle data and fit linear regression
 
-Then we download data from the New York Times API (thanks Andy Jones @andy_l_jones for the pointer)
-and create a data frame. Here we fit the line and obtain standard errors using ordinary least squares. 
+The following code downloads data from the New York Times API
+and create a data frame with the information needed for the plots. Here we fit the line and obtain standard errors using ordinary least squares. 
 
 ```{r}
 states <-c('pennsylvania', 'georgia', 'arizona', 'nevada')
@@ -135,7 +135,11 @@ all the x-values change and the entire plots moves to the left or to the right. 
 
 
 
+## Thanks
 
+* Rick Paik Schoenberg, for alerting me to the linear pattern.
+
+* Andy Jones @andy_l_jones, for the pointing out the API.
 
 
 
