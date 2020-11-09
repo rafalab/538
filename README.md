@@ -10,4 +10,7 @@
 
 * explanation.md - describes the details of the model
 
+# Election Count Prediction
+
+* [R markdown document](https://github.com/rafalab/538/blob/master/election-count-updates.md) and [code](https://github.com/rafalab/538/blob/master/election-count-updates.Rmd)
 

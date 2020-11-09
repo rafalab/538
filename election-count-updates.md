@@ -1,7 +1,7 @@
 Election Count Predictions
 ================
 Rafael Irizarry
-2020-11-09 10:34:01
+2020-11-09 13:29:41
 
 ## Load libraries
 
@@ -77,6 +77,36 @@ dat %>%
 
 ![](election-count-updates_files/figure-gfm/election-count-update-1.png)<!-- -->
 
+## Latest reported difference and final estimate
+
+``` r
+final_estimate <- dat %>% 
+  arrange(desc(pct_reporting)) %>%
+  group_by(state) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(state, reg_line) %>%
+  mutate(reg_line = format(round(-reg_line, 1), nsmall=1)) %>%
+  setNames(c("State", "Final Estiamte"))
+last_update <- dat %>% 
+  filter(!is.na(Trumps_lead)) %>%
+  arrange(desc(pct_reporting)) %>%
+  group_by(state) %>%
+  slice(1) %>%
+  ungroup() %>%
+  mutate(Biden_lead = format(-Trumps_lead, nsmall = 1)) %>%
+  select(state, Biden_lead) %>%
+  setNames(c("State", "Current Biden lead"))
+left_join(last_update, final_estimate, by = "State") %>% knitr::kable(align = c("l","r","r","r"))
+```
+
+| State        | Current Biden lead | Final Estiamte |
+| :----------- | -----------------: | -------------: |
+| Arizona      |                0.5 |            0.1 |
+| Georgia      |                0.2 |            0.6 |
+| Nevada       |                2.7 |            3.2 |
+| Pennsylvania |                0.7 |            2.0 |
+
 ## The Math
 
 Why is it a linear trend? The main drive for this is the fact that by
@@ -101,7 +131,7 @@ observed difference had expected value
 
 *f(x) = b + mx*
 
-As the night progressed, *x* grew and because *m*is negative, the
+As the night progressed, *x* grew and because *m* is negative, the
 observed difference *f(x)* decreased linearly, with slope *m*, as the
 percent *x* grew. Once *x=1* we will see the final differences *f(1) =
 b+m*.
@@ -122,10 +152,10 @@ popular, *m* was not negative, in fact it was slightly positive.
     the left or to the right. Only when we are done counting will we
     know what the total vote was.
 
-  - *mx* actually follows a binomial distribution and *f(x)* is actually
-    its expected value. But because the number of votes being considered
-    were large, the standard error of this random variable was
-    negligible.
+  - *mx* actually follows a binomial distribution and *f(x) - b* is
+    actually its expected value. But because the number of votes being
+    considered were very large, the standard error of this random
+    variable was negligible.
 
   - We show the percentages rather than the totals because this is what
     is included in the API. So we are not really seeing *f(x)* but
@@ -137,4 +167,5 @@ popular, *m* was not negative, in fact it was slightly positive.
 
   - Rick Paik Schoenberg, for alerting me to the linear pattern.
 
-  - Andy Jones @andy\_l\_jones, for the pointing out the API.
+  - Andy Jones \[@andy\_l\_jones\](<https://twitter.com/andy_l_jones>),
+    for pointing out the API.
