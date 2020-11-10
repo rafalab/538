@@ -1,7 +1,7 @@
 Election Count Predictions
 ================
 Rafael Irizarry
-2020-11-09 14:30:51
+2020-11-10 11:53:12
 
 ## Load libraries
 
@@ -102,7 +102,7 @@ left_join(last_update, final_estimate, by = "State") %>% knitr::kable(align = c(
 
 | State        | Current Biden lead | Final Estiamte |
 | :----------- | -----------------: | -------------: |
-| Arizona      |                0.5 |            0.2 |
+| Arizona      |                0.4 |            0.1 |
 | Georgia      |                0.2 |            0.6 |
 | Nevada       |                2.7 |            3.1 |
 | Pennsylvania |                0.7 |            1.8 |
@@ -141,21 +141,21 @@ popular, *m* was not negative, in fact it was slightly positive.
 
 ## Technical notes
 
-  - In each state, the data is not independent because each point is an
-    updated percentages not percentages from new votes. As a result the
+  - In each state, the data points are not independent because they are
+    updated percentages, not just from new votes. As a result the
     standard errors used to construct the confidence intervals are
     underestimated.
 
   - The main source of variation seems to be the expected total vote,
-    which changed throughout the night. Note that when the estimated
+    which changed throughout the night. Note that when this estimated
     total changes, all the x-values change and the entire plots moves to
     the left or to the right. Only when we are done counting will we
     know what the total vote was.
 
   - *mx* actually follows a binomial distribution and *f(x) - b* is
     actually its expected value. But because the number of votes being
-    considered were very large, the standard error of this random
-    variable was negligible.
+    considered was very large, the standard error of this random
+    variable was negligible. We assume the observed point is \(b+mx\).
 
   - We show the percentages rather than the totals because this is what
     is included in the API. So we are not really seeing *f(x)* but
